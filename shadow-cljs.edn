@@ -3,7 +3,8 @@
  ["src/cljs"]
 
  :dependencies [[binaryage/devtools "0.9.7"]
-                [reagent "0.8.0-alpha2"]]
+                [reagent "0.8.0-alpha2"]
+                [cider/cider-nrepl "0.21.1"]]
 
  ;; set an nrepl port for connection to a REPL.
  :nrepl        {:port 8777}
@@ -22,8 +23,5 @@
         {:before-load todomvc-db-view.core/stop
          ;; after live-reloading finishes call this function
          :after-load todomvc-db-view.core/start
-         ;; serve the public directory over http at port 8700
-         :http-root    "public"
-         :http-port    8700
          :preloads     [devtools.preload]}
         }}}
