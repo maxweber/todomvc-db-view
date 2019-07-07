@@ -9,10 +9,10 @@
 (def shutdown-hook
   ;; stops the system on a JVM shutdown:
   (Thread.
-    (fn []
-      (server/stop))))
+   (fn []
+     (server/stop!))))
 
 (defn -main [& args]
   (.addShutdownHook (Runtime/getRuntime)
                     shutdown-hook)
-  (server/start))
+  (server/start!))
