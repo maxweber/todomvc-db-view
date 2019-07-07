@@ -1,5 +1,6 @@
 (ns todomvc-db-view.main
-  (:require [todomvc-db-view.server :as server])
+  (:require [todomvc-db-view.system :as system]
+            dev)
   (:gen-class))
 
 ;; Concept:
@@ -10,9 +11,9 @@
   ;; stops the system on a JVM shutdown:
   (Thread.
    (fn []
-     (server/stop!))))
+     (system/stop!))))
 
 (defn -main [& args]
   (.addShutdownHook (Runtime/getRuntime)
                     shutdown-hook)
-  (server/start!))
+  (system/start!))
