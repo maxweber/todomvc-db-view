@@ -53,15 +53,17 @@
   "Returns the db-view for the todo list UI."
   [db db-view-params]
   (when-let [params (:todo/list db-view-params)]
-    (let [eids (case (:todo/filter params)
+    (let [active-eids (q-active db)
+          eids (case (:todo/filter params)
                  :active
-                 (q-active db)
+                 active-eids
                  :completed
                  (q-completed db)
                  ;; default:
                  (q-all db))]
       {:todo/list {:todo/list-items (pull db
-                                          eids)}})))
+                                          eids)
+                   :todo/active-count (count active-eids)}})))
 
 (comment
   (require '[clj-http.client :as http])

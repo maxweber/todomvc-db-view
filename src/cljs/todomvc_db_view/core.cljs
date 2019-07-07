@@ -64,8 +64,12 @@
                      :on-click (fn [_e]
                                  (select-filter! name))})]
     [:div
-     #_[:span#todo-count
-        [:strong active] " " (case active 1 "item" "items") " left"]
+     (let [active-count (:todo/active-count @todo-list-cursor)]
+       [:span#todo-count
+        [:strong active-count] " " (case active-count
+                                     1
+                                     "item"
+                                     "items") " left"])
      [:ul#filters
       [:li [:a (props-for :all) "All"]]
       [:li [:a (props-for :active) "Active"]]
