@@ -35,6 +35,10 @@
                                27 (stop)
                                nil)}])))
 
+(def todo-list-cursor
+  (state/cursor [:db-view/value
+                 :todo/list]))
+
 (def todo-edit (with-meta todo-input
                  {:component-did-mount #(.focus (r/dom-node %))}))
 
@@ -71,11 +75,7 @@
 (defn todo-app [props]
   (let [filt (r/atom :all)]
     (fn []
-      (let [state-value @state/state
-            items (get-in state-value
-                          [:db-view/value
-                           :todo/list
-                           :todo/list-items])
+      (let [items (:todo/list-items @todo-list-cursor)
             ;; done (->> items (filter :done) count)
             ;; active (- (count items) done)
             ]
