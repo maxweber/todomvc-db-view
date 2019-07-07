@@ -4,6 +4,9 @@
 
  :dependencies [[binaryage/devtools "0.9.7"]
                 [reagent "0.8.0-alpha2"]
+                [cljs-http "0.1.46"]
+                [org.clojure/core.async "0.4.500"]
+
                 [cider/cider-nrepl "0.21.1"]]
 
  ;; set an nrepl port for connection to a REPL.
@@ -16,12 +19,12 @@
 
         :modules
         {:main
-         {:entries [todomvc-db-view.core]}}
+         {:entries [todomvc-db-view.mount]}}
 
         :devtools
         ;; before live-reloading any code call this function
-        {:before-load todomvc-db-view.core/stop
+        {:before-load todomvc-db-view.mount/stop
          ;; after live-reloading finishes call this function
-         :after-load todomvc-db-view.core/start
+         :after-load todomvc-db-view.mount/start
          :preloads     [devtools.preload]}
         }}}

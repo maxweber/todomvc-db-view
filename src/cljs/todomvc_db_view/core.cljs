@@ -103,19 +103,3 @@
               [todo-stats {:active active :done done :filt filt}]]])]
          [:footer#info
           [:p "Double-click to edit a todo"]]]))))
-
-
-(defn start []
-  (r/render-component [todo-app]
-                      (. js/document (getElementById "app"))))
-
-(defn ^:export init []
-  ;; init is called ONCE when the page loads
-  ;; this is called in the index.html and must be exported
-  ;; so it is available even in :advanced release builds
-  (start))
-
-(defn stop []
-  ;; stop is called before any code is reloaded
-  ;; this is controlled by :before-load in the config
-  (js/console.log "stop"))
