@@ -1,6 +1,7 @@
 (ns todomvc-db-view.core
   (:require [reagent.core :as r]
-            [todomvc-db-view.state.core :as state]))
+            [todomvc-db-view.state.core :as state]
+            [todomvc-db-view.db-view.get :as db-view]))
 
 (defonce todos (r/atom (sorted-map)))
 
@@ -39,23 +40,39 @@
   (state/cursor [:db-view/value
                  :todo/list]))
 
+(def todo-list-params-cursor
+  (state/cursor [:db-view/params
+                 :todo/list]))
+
 (def todo-edit (with-meta todo-input
                  {:component-did-mount #(.focus (r/dom-node %))}))
 
-(defn todo-stats [{:keys [filt active done]}]
-  (let [props-for (fn [name]
-                    {:class (if (= name @filt) "selected")
-                     :on-click #(reset! filt name)})]
+(defn select-filter!
+  "Selects the filter (`:all`, `:active` or `:completed`) for the todo
+   list items and refreshes the db-view."
+  [filter-name]
+  (swap! todo-list-params-cursor
+         assoc
+         :todo/filter filter-name)
+  (db-view/refresh!))
+
+(defn todo-stats []
+  (let [selected (:todo/filter @todo-list-params-cursor
+                               :all)
+        props-for (fn [name]
+                    {:class (if (= name selected) "selected")
+                     :on-click (fn [_e]
+                                 (select-filter! name))})]
     [:div
-     [:span#todo-count
-      [:strong active] " " (case active 1 "item" "items") " left"]
+     #_[:span#todo-count
+        [:strong active] " " (case active 1 "item" "items") " left"]
      [:ul#filters
       [:li [:a (props-for :all) "All"]]
       [:li [:a (props-for :active) "Active"]]
-      [:li [:a (props-for :done) "Completed"]]]
-     (when (pos? done)
-       [:button#clear-completed {:on-click clear-done}
-        "Clear completed " done])]))
+      [:li [:a (props-for :completed) "Completed"]]]
+     #_(when (pos? done)
+         [:button#clear-completed {:on-click clear-done}
+          "Clear completed " done])]))
 
 (defn todo-item []
   (let [editing (r/atom false)]
@@ -93,13 +110,9 @@
                                     :on-change #(complete-all (pos? active))}]
               [:label {:for "toggle-all"} "Mark all as complete"]
               [:ul#todo-list
-               (for [todo items
-                     #_(filter (case @filt
-                                 :active (complement :done)
-                                 :done :done
-                                 :all identity) items)]
+               (for [todo items]
                  ^{:key (:db/id todo)} [todo-item todo])]]
-             #_[:footer#footer
-                [todo-stats {:active active :done done :filt filt}]]])]
+             [:footer#footer
+              [todo-stats]]])]
          [:footer#info
           [:p "Double-click to edit a todo"]]]))))
