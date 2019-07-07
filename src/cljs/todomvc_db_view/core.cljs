@@ -1,5 +1,6 @@
 (ns todomvc-db-view.core
-  (:require [reagent.core :as r]))
+  (:require [reagent.core :as r]
+            [todomvc-db-view.state.core :as state]))
 
 (defonce todos (r/atom (sorted-map)))
 
@@ -16,13 +17,6 @@
 (defn mmap [m f a] (->> m (f a) (into (empty m))))
 (defn complete-all [v] (swap! todos mmap map #(assoc-in % [1 :done] v)))
 (defn clear-done [] (swap! todos mmap remove #(get-in % [1 :done])))
-
-(defonce do-init (do
-                   (add-todo "Rename Cloact to Reagent")
-                   (add-todo "Add undo demo")
-                   (add-todo "Make all rendering async")
-                   (add-todo "Allow any arguments to component functions")
-                   (complete-all true)))
 
 (defn todo-input [{:keys [title on-save on-stop]}]
   (let [val (r/atom title)
@@ -61,7 +55,7 @@
 
 (defn todo-item []
   (let [editing (r/atom false)]
-    (fn [{:keys [id done title]}]
+    (fn [{:keys [db/id todo/done todo/title]}]
       [:li {:class (str (if done "completed ")
                         (if @editing "editing"))}
        [:div.view
@@ -77,29 +71,35 @@
 (defn todo-app [props]
   (let [filt (r/atom :all)]
     (fn []
-      (let [items (vals @todos)
-            done (->> items (filter :done) count)
-            active (- (count items) done)]
+      (let [state-value @state/state
+            items (get-in state-value
+                          [:db-view/value
+                           :todo/list
+                           :todo/list-items])
+            ;; done (->> items (filter :done) count)
+            ;; active (- (count items) done)
+            ]
         [:div
          [:section#todoapp
           [:header#header
            [:h1 "todos"]
-           [todo-input {:id "new-todo"
-                        :placeholder "What needs to be done?"
-                        :on-save add-todo}]]
+           #_[todo-input {:id "new-todo"
+                          :placeholder "What needs to be done?"
+                          :on-save add-todo}]]
           (when (-> items count pos?)
             [:div
              [:section#main
-              [:input#toggle-all {:type "checkbox" :checked (zero? active)
-                                  :on-change #(complete-all (pos? active))}]
+              #_[:input#toggle-all {:type "checkbox" :checked (zero? active)
+                                    :on-change #(complete-all (pos? active))}]
               [:label {:for "toggle-all"} "Mark all as complete"]
               [:ul#todo-list
-               (for [todo (filter (case @filt
-                                    :active (complement :done)
-                                    :done :done
-                                    :all identity) items)]
-                 ^{:key (:id todo)} [todo-item todo])]]
-             [:footer#footer
-              [todo-stats {:active active :done done :filt filt}]]])]
+               (for [todo items
+                     #_(filter (case @filt
+                                 :active (complement :done)
+                                 :done :done
+                                 :all identity) items)]
+                 ^{:key (:db/id todo)} [todo-item todo])]]
+             #_[:footer#footer
+                [todo-stats {:active active :done done :filt filt}]]])]
          [:footer#info
           [:p "Double-click to edit a todo"]]]))))
