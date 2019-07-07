@@ -1,6 +1,7 @@
 (ns todomvc-db-view.datomic.connection
   (:require [datomic.api :as d]
-            [todomvc-db-view.datomic.schema :as schema]))
+            [todomvc-db-view.datomic.schema :as schema]
+            [todomvc-db-view.datomic.example-data :as example-data]))
 
 ;; Concept:
 ;;
@@ -16,6 +17,8 @@
   (let [con (d/connect db-uri)]
     @(d/transact con
                  schema/schema)
+    @(d/transact con
+                 example-data/example-data)
     con))
 
 (defn stop
