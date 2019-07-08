@@ -21,3 +21,10 @@
   (binding [*print-length* nil
             *print-level* nil]
     (clojure.core/pr-str x)))
+
+(defn response
+  "Returns a Ring response map with the serialized `edn-data`."
+  [edn-data]
+  {:status 200
+   :headers {"Content-Type" "application/edn"}
+   :body (pr-str edn-data)})

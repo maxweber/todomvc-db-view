@@ -81,12 +81,10 @@
           "Clear completed " done])]))
 
 (defn send-command!
-  "Sends an encrypted command map to the server and refreshes the
-   db-view afterwards."
+  "Sends an encrypted command map to the server."
   [command]
   (go
-    (<! (command/send! command))
-    (db-view/refresh!)))
+    (<! (command/send! command))))
 
 (defn todo-item []
   (let [editing (r/atom false)]

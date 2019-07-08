@@ -1,6 +1,7 @@
 (ns todomvc-db-view.mount
   (:require [todomvc-db-view.db-view.get :as db-view]
             [todomvc-db-view.core :as core]
+            [todomvc-db-view.db-view.notify :as notify]
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
@@ -18,6 +19,7 @@
   ;; so it is available even in :advanced release builds
   (go
     (<! (db-view/refresh!))
+    (notify/start-listening)
     (start)))
 
 (defn stop []

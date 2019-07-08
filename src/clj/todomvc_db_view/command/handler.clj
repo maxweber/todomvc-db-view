@@ -65,13 +65,11 @@
         (throw (ex-info "unknown command type"
                         (select-keys command
                                      [:command/type]))))
-      {:status 200
-       :headers {"Content-Type" "application/edn"}
-       :body (edn/pr-str
-              (merge {:status :ok}
-                     ;; a command handler can return a result:
-                     (when-let [result (:command/result (command-handler command))]
-                       {:command/result result})))})))
+      (edn/response
+       (merge {:status :ok}
+              ;; a command handler can return a result:
+              (when-let [result (:command/result (command-handler command))]
+                {:command/result result}))))))
 
 (defn example-command-handler
   "Just an example command-handler that writes something to the log."
@@ -79,7 +77,7 @@
   (println "example-command-handler"
            (edn/pr-str command)))
 
-(defn command-handler
+(defn ring-handler
   [system-value request]
   (let [con (:datomic/con system-value)]
     (handle-command

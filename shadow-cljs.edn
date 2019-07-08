@@ -3,7 +3,8 @@
  ["src/cljs"]
 
  :dependencies [[binaryage/devtools "0.9.7"]
-                [reagent "0.8.0-alpha2"]
+                [reagent "0.8.1" :exclusions [cljsjs/react
+                                              cljsjs/react-dom]]
                 [cljs-http "0.1.46"]
                 [org.clojure/core.async "0.4.500"]
 

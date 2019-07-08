@@ -34,7 +34,6 @@
     (let [db-view-params (edn/read-string (slurp (:body request)))]
       ;; NOTE: for a production app do the appropriate authorization
       ;;       checks:
-      {:status 200
-       :headers {"Content-Type" "application/edn"}
-       :body (edn/pr-str (get-view db
-                                   db-view-params))})))
+      (edn/response
+       (get-view db
+                 db-view-params)))))
