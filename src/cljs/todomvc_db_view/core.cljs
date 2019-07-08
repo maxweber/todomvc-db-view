@@ -1,7 +1,9 @@
 (ns todomvc-db-view.core
   (:require [reagent.core :as r]
             [todomvc-db-view.state.core :as state]
-            [todomvc-db-view.db-view.get :as db-view]))
+            [todomvc-db-view.db-view.get :as db-view]
+            [todomvc-db-view.command.send :as command])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defonce todos (r/atom (sorted-map)))
 
@@ -78,14 +80,25 @@
          [:button#clear-completed {:on-click clear-done}
           "Clear completed " done])]))
 
+(defn send-command!
+  "Sends an encrypted command map to the server and refreshes the
+   db-view afterwards."
+  [command]
+  (go
+    (<! (command/send! command))
+    (db-view/refresh!)))
+
 (defn todo-item []
   (let [editing (r/atom false)]
-    (fn [{:keys [db/id todo/done todo/title]}]
+    (fn [{:keys [db/id todo/done todo/title todo/done! todo/active!]}]
       [:li {:class (str (if done "completed ")
                         (if @editing "editing"))}
        [:div.view
         [:input.toggle {:type "checkbox" :checked done
-                        :on-change #(toggle id)}]
+                        :on-change (fn [_e]
+                                     (if done!
+                                       (send-command! done!)
+                                       (send-command! active!)))}]
         [:label {:on-double-click #(reset! editing true)} title]
         [:button.destroy {:on-click #(delete id)}]]
        (when @editing

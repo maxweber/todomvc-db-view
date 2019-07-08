@@ -3,6 +3,7 @@
             [ring.middleware.file :as middleware-file]
             [todomvc-db-view.datomic.connection :as datomic]
             [todomvc-db-view.db-view.get :as db-view-get]
+            [todomvc-db-view.command.handler :as command-handler]
             [datomic.api :as d]
             [ring.util.response :as response]))
 
@@ -17,6 +18,8 @@
     (or
      (db-view-get/ring-handler db
                                request)
+     (command-handler/command-handler system-value
+                                      request)
      ;; NOTE: add new Ring handlers here.
      )))
 

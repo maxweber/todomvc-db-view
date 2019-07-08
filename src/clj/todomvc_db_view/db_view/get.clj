@@ -1,6 +1,6 @@
 (ns todomvc-db-view.db-view.get
   (:require [datomic.api :as d]
-            [clojure.edn :as edn]
+            [todomvc-db-view.util.edn :as edn]
             [todomvc-db-view.db-view.todo-list :as todo-list]))
 
 ;; Concept:
@@ -36,5 +36,5 @@
       ;;       checks:
       {:status 200
        :headers {"Content-Type" "application/edn"}
-       :body (pr-str (get-view db
-                               db-view-params))})))
+       :body (edn/pr-str (get-view db
+                                   db-view-params))})))

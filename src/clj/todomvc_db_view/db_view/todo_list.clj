@@ -1,5 +1,6 @@
 (ns todomvc-db-view.db-view.todo-list
-  (:require [datomic.api :as d]))
+  (:require [datomic.api :as d]
+            [todomvc-db-view.command.crypto :as command]))
 
 ;; Concept:
 ;;
@@ -31,7 +32,8 @@
      [?e ...]
      :where
      [?e :todo/title]
-     (not [?e :todo/done])]
+     (or (not [?e :todo/done])
+         [?e :todo/done false])]
    db))
 
 (defn q-completed
@@ -49,20 +51,40 @@
 ;;       Rules](https://docs.datomic.com/on-prem/query.html#rules)
 ;;       above to avoid some repetition.
 
+(defn prepare-todo-items
+  "Prepares the todo items identified by the `eids` for the db-view
+   value."
+  [db eids]
+  (map
+   (fn [todo-list-item]
+     (merge
+      todo-list-item
+      (if-not (:todo/done todo-list-item)
+        {:todo/done! (command/encrypt-command
+                      {:command/type :todo/done!
+                       :db/id (:db/id todo-list-item)})}
+        {:todo/active! (command/encrypt-command
+                        {:command/type :todo/active!
+                         :db/id (:db/id todo-list-item)})})))
+   (pull db
+         eids)))
+
 (defn get-view
   "Returns the db-view for the todo list UI."
   [db db-view-params]
   (when-let [params (:todo/list db-view-params)]
     (let [active-eids (q-active db)
-          eids (case (:todo/filter params)
+          todo-filter (:todo/filter params
+                                    :all)
+          eids (case todo-filter
                  :active
                  active-eids
                  :completed
                  (q-completed db)
-                 ;; default:
+                 :all
                  (q-all db))]
-      {:todo/list {:todo/list-items (pull db
-                                          eids)
+      {:todo/list {:todo/list-items (prepare-todo-items db
+                                                        eids)
                    :todo/active-count (count active-eids)}})))
 
 (comment
