@@ -7,4 +7,5 @@
                  [buddy/buddy-core "1.6.0"]]
   :source-paths ["src/clj"]
   :plugins [[cider/cider-nrepl "0.21.1"]]
-  :profiles {:dev {:dependencies [[clj-http "3.10.0"]]}})
+  :profiles {:dev {:dependencies [[clj-http "3.10.0"]]
+                   :repl-options {:init-ns dev.init}}})
