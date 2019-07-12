@@ -10,9 +10,18 @@
 (defonce counter (r/atom 0))
 
 (defn add-todo
-  [text]
-  (let [id (swap! counter inc)]
-    (swap! todos assoc id {:id id :title text :done false})))
+  [title]
+  (swap! state/state
+         assoc-in
+         [:db-view/params
+          :todo/new]
+         {:todo/title title})
+  (go
+    (<! (db-view/refresh!))
+    (<! (send-command! (get-in @state/state
+                               [:db-view/value
+                                :todo/new
+                                :todo/new!])))))
 
 (defn toggle
   [id]
@@ -146,18 +155,7 @@
            [:h1 "todos"]
            [todo-input {:id "new-todo"
                         :placeholder "What needs to be done?"
-                        :on-save (fn [title]
-                                   (swap! state/state
-                                          assoc-in
-                                          [:db-view/params
-                                           :todo/new]
-                                          {:todo/title title})
-                                   (go
-                                     (<! (db-view/refresh!))
-                                     (<! (send-command! (get-in @state/state
-                                                                [:db-view/value
-                                                                 :todo/new
-                                                                 :todo/new!])))))}]]
+                        :on-save add-todo}]]
           (when (-> items count pos?)
             [:div
              [:section#main
