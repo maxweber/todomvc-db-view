@@ -2,7 +2,8 @@
   (:require [datomic.api :as d]
             [todomvc-db-view.util.edn :as edn]
             [todomvc-db-view.db-view.todo-list :as todo-list]
-            [todomvc-db-view.db-view.todo-edit :as todo-edit]))
+            [todomvc-db-view.db-view.todo-edit :as todo-edit]
+            [todomvc-db-view.db-view.todo-new :as todo-new]))
 
 ;; Concept:
 ;;
@@ -22,6 +23,8 @@
                        db-view-params)
    (todo-edit/get-view db
                        db-view-params)
+   (todo-new/get-view db
+                      db-view-params)
    ;; NOTE: add other db-view parts here.
    ))
 

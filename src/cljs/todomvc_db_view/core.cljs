@@ -144,9 +144,20 @@
          [:section#todoapp
           [:header#header
            [:h1 "todos"]
-           #_[todo-input {:id "new-todo"
-                          :placeholder "What needs to be done?"
-                          :on-save add-todo}]]
+           [todo-input {:id "new-todo"
+                        :placeholder "What needs to be done?"
+                        :on-save (fn [title]
+                                   (swap! state/state
+                                          assoc-in
+                                          [:db-view/params
+                                           :todo/new]
+                                          {:todo/title title})
+                                   (go
+                                     (<! (db-view/refresh!))
+                                     (<! (send-command! (get-in @state/state
+                                                                [:db-view/value
+                                                                 :todo/new
+                                                                 :todo/new!])))))}]]
           (when (-> items count pos?)
             [:div
              [:section#main

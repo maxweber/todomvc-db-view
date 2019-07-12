@@ -27,3 +27,11 @@
   @(d/transact con
                [{:db/id (:db/id command)
                  :todo/title (:todo/title command)}]))
+
+(defn new!
+  "Command to create a new todo item with a title"
+  [con command]
+  @(d/transact con
+               [{:db/id "new TODO"
+                 :todo/title (:todo/title command)
+                 :todo/done false}]))

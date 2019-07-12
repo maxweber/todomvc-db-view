@@ -90,6 +90,8 @@
                              con)
       :todo/edit! (partial todo-item/edit!
                            con)
+      :todo/new! (partial todo-item/new!
+                          con)
       ;; NOTE: register new command handler here.
       }
      request)))
