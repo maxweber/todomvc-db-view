@@ -4,3 +4,6 @@
 node_modules/
 public/js/compiled/
 target/
+/.idea
+/pom.xml
+/*.iml
