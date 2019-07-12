@@ -86,6 +86,8 @@
                            con)
       :todo/active! (partial todo-item/active!
                              con)
+      :todo/delete! (partial todo-item/delete!
+                             con)
       ;; NOTE: register new command handler here.
       }
      request)))

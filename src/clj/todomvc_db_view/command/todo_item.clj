@@ -14,3 +14,8 @@
   @(d/transact con
                [{:db/id (:db/id command)
                  :todo/done false}]))
+
+(defn delete!
+  [con command]
+  @(d/transact con
+               [[:db/retractEntity (:db/id command)]]))

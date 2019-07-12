@@ -64,8 +64,11 @@
                       {:command/type :todo/done!
                        :db/id (:db/id todo-list-item)})}
         {:todo/active! (command/encrypt-command
-                        {:command/type :todo/active!
-                         :db/id (:db/id todo-list-item)})})))
+                         {:command/type :todo/active!
+                          :db/id (:db/id todo-list-item)})})
+      {:todo/delete! (command/encrypt-command
+                       {:command/type :todo/delete!
+                        :db/id (:db/id todo-list-item)})}))
    (pull db
          eids)))
 
@@ -75,7 +78,7 @@
   (when-let [params (:todo/list db-view-params)]
     (let [active-eids (q-active db)
           todo-filter (:todo/filter params
-                                    :all)
+                        :all)
           eids (case todo-filter
                  :active
                  active-eids

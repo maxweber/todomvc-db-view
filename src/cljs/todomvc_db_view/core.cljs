@@ -9,13 +9,22 @@
 
 (defonce counter (r/atom 0))
 
-(defn add-todo [text]
+(defn add-todo
+  [text]
   (let [id (swap! counter inc)]
     (swap! todos assoc id {:id id :title text :done false})))
 
-(defn toggle [id] (swap! todos update-in [id :done] not))
-(defn save [id title] (swap! todos assoc-in [id :title] title))
-(defn delete [id] (swap! todos dissoc id))
+(defn toggle
+  [id]
+  (swap! todos update-in [id :done] not))
+
+(defn save
+  [id title]
+  (swap! todos assoc-in [id :title] title))
+
+(defn delete
+  [id]
+  (swap! todos dissoc id))
 
 (defn mmap [m f a] (->> m (f a) (into (empty m))))
 (defn complete-all [v] (swap! todos mmap map #(assoc-in % [1 :done] v)))
@@ -88,17 +97,20 @@
 
 (defn todo-item []
   (let [editing (r/atom false)]
-    (fn [{:keys [db/id todo/done todo/title todo/done! todo/active!]}]
+    (fn [{:keys [db/id todo/done todo/title todo/done! todo/active! todo/delete!]}]
       [:li {:class (str (if done "completed ")
                         (if @editing "editing"))}
        [:div.view
-        [:input.toggle {:type "checkbox" :checked done
+        [:input.toggle {:type "checkbox"
+                        :checked done
                         :on-change (fn [_e]
                                      (if done!
                                        (send-command! done!)
                                        (send-command! active!)))}]
         [:label {:on-double-click #(reset! editing true)} title]
-        [:button.destroy {:on-click #(delete id)}]]
+        [:button.destroy {:on-click
+                          (fn []
+                            (send-command! delete!))}]]
        (when @editing
          [todo-edit {:class "edit" :title title
                      :on-save #(save id %)
