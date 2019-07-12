@@ -1,5 +1,6 @@
 (ns todomvc-db-view.util.edn
-  (:require [clojure.edn :as edn])
+  (:require [clojure.edn :as edn]
+            [clojure.pprint :as pprint])
   (:refer-clojure :exclude [read read-string pr-str]))
 
 (defn read-string
@@ -27,4 +28,4 @@
   [edn-data]
   {:status 200
    :headers {"Content-Type" "application/edn"}
-   :body (pr-str edn-data)})
+   :body (with-out-str (pprint/pprint edn-data))})

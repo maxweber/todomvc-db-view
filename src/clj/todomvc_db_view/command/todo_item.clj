@@ -16,6 +16,14 @@
                  :todo/done false}]))
 
 (defn delete!
+  "Command to delete the todo item"
   [con command]
   @(d/transact con
                [[:db/retractEntity (:db/id command)]]))
+
+(defn edit!
+  "Command to edit the title of the todo item"
+  [con command]
+  @(d/transact con
+               [{:db/id (:db/id command)
+                 :todo/title (:todo/title command)}]))

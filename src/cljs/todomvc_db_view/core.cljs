@@ -108,12 +108,29 @@
                                        (send-command! done!)
                                        (send-command! active!)))}]
         [:label {:on-double-click #(reset! editing true)} title]
+
         [:button.destroy {:on-click
                           (fn []
                             (send-command! delete!))}]]
        (when @editing
          [todo-edit {:class "edit" :title title
-                     :on-save #(save id %)
+                     :on-save (fn [new-title]
+                                (swap! state/state
+                                       assoc-in
+                                       [:db-view/params
+                                        :todo/edit]
+                                       {:todo/title new-title
+                                        :db/id id})
+                                (go
+                                  (<! (db-view/refresh!))
+                                  (if-let [error (get-in @state/state [:db-view/value
+                                                                       :todo/edit
+                                                                       :error])]
+                                    (js/alert error)
+                                    (<! (send-command! (get-in @state/state
+                                                               [:db-view/value
+                                                                :todo/edit
+                                                                :todo/edit!]))))))
                      :on-stop #(reset! editing false)}])])))
 
 (defn todo-app [props]

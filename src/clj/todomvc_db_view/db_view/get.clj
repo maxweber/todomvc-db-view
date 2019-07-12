@@ -1,7 +1,8 @@
 (ns todomvc-db-view.db-view.get
   (:require [datomic.api :as d]
             [todomvc-db-view.util.edn :as edn]
-            [todomvc-db-view.db-view.todo-list :as todo-list]))
+            [todomvc-db-view.db-view.todo-list :as todo-list]
+            [todomvc-db-view.db-view.todo-edit :as todo-edit]))
 
 ;; Concept:
 ;;
@@ -18,6 +19,8 @@
   [db db-view-params]
   (merge
    (todo-list/get-view db
+                       db-view-params)
+   (todo-edit/get-view db
                        db-view-params)
    ;; NOTE: add other db-view parts here.
    ))
