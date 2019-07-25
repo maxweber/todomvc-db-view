@@ -9,6 +9,12 @@
 
 (defonce counter (r/atom 0))
 
+(defn send-command!
+  "Sends an encrypted command map to the server."
+  [command]
+  (go
+    (<! (command/send! command))))
+
 (defn add-todo
   [title]
   (swap! state/state
@@ -97,12 +103,6 @@
      #_(when (pos? done)
          [:button#clear-completed {:on-click clear-done}
           "Clear completed " done])]))
-
-(defn send-command!
-  "Sends an encrypted command map to the server."
-  [command]
-  (go
-    (<! (command/send! command))))
 
 (defn todo-item []
   (let [editing (r/atom false)]
