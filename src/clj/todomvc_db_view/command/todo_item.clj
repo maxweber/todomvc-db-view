@@ -1,37 +1,39 @@
 (ns todomvc-db-view.command.todo-item
   (:require [datomic.api :as d]))
 
-(defn done!
-  "Command marks the todo item as done."
-  [con command]
-  @(d/transact con
-               [{:db/id (:db/id command)
-                 :todo/done true}]))
+(defn done-tx
+  "Transaction to mark the todo item as done."
+  [command]
+  [{:db/id (:db/id command)
+    :todo/done true}])
 
-(defn active!
-  "Command marks the todo item as active."
-  [con command]
-  @(d/transact con
-               [{:db/id (:db/id command)
-                 :todo/done false}]))
+(defn active-tx
+  "Transaction to mark the todo item as active."
+  [command]
+  [{:db/id (:db/id command)
+    :todo/done false}])
 
-(defn delete!
-  "Command to delete the todo item"
-  [con command]
-  @(d/transact con
-               [[:db/retractEntity (:db/id command)]]))
+(defn delete-tx
+  "Transaction to delete the todo item"
+  [command]
+  [[:db/retractEntity (:db/id command)]])
 
-(defn edit!
-  "Command to edit the title of the todo item"
-  [con command]
-  @(d/transact con
-               [{:db/id (:db/id command)
-                 :todo/title (:todo/title command)}]))
+(defn edit-tx
+  "Transaction to edit the title of the todo item"
+  [command]
+  [{:db/id (:db/id command)
+    :todo/title (:todo/title command)}])
 
-(defn new!
-  "Command to create a new todo item with a title"
-  [con command]
-  @(d/transact con
-               [{:db/id "new TODO"
-                 :todo/title (:todo/title command)
-                 :todo/done false}]))
+(defn new-tx
+  "Transaction to create a new todo item with a title"
+  [command]
+  [{:db/id "new TODO"
+    :todo/title (:todo/title command)
+    :todo/done false}])
+
+(def command-effects
+  {:todo/done! done-tx
+   :todo/active! active-tx
+   :todo/delete! delete-tx
+   :todo/edit! edit-tx
+   :todo/new! new-tx})

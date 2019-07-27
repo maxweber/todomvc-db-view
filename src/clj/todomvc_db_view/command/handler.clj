@@ -1,7 +1,8 @@
 (ns todomvc-db-view.command.handler
   (:require [todomvc-db-view.command.crypto :as crypto]
             [todomvc-db-view.util.edn :as edn]
-            [todomvc-db-view.command.todo-item :as todo-item]))
+            [todomvc-db-view.command.todo-item :as todo-item]
+            [datomic.api :as d]))
 
 ;; Concept:
 ;;
@@ -44,11 +45,8 @@
    - it receives an invalid EDN encoded `:body`
 
    - the decryption of the `encrypted-command-string` fails, meaning
-     it probably was manipulated.
-
-   - If no command handler is registered for the `:command/type` in
-     the command map."
-  [command-handlers request]
+     it probably was manipulated."
+  [command-handler! request]
   (when (and (= (:request-method request) :post)
              (= (:uri request) "/command"))
     ;; NOTE: an authorization check is not necessary here, since
@@ -58,43 +56,36 @@
     ;; authentication like a user registration form.
     (let [params (edn/read-string (slurp (:body request)))
           encrypted-command-string (:command/encrypted params)
-          command (crypto/decrypt-command encrypted-command-string)
-          command-handler (get command-handlers
-                               (:command/type command))]
-      (when-not command-handler
-        (throw (ex-info "unknown command type"
-                        (select-keys command
-                                     [:command/type]))))
-      (edn/response
-       (merge {:status :ok}
-              ;; a command handler can return a result:
-              (when-let [result (:command/result (command-handler command))]
-                {:command/result result}))))))
+          command (crypto/decrypt-command encrypted-command-string)]
+      (command-handler! command))))
 
 (defn example-command-handler
-  "Just an example command-handler that writes something to the log."
+  "Just an example command-handler that writes something to stdout."
   [command]
   (println "example-command-handler"
            (edn/pr-str command)))
 
+(defn command-handler!
+  "A command-effect may perform side-effects and may return a Datomic
+   transaction that will be transacted by this command-handler."
+  [datomic-connection get-command-effect command]
+  (when-let [command-effect (get-command-effect (:command/type command))]
+    (when-let [datomic-tx (command-effect command)]
+      @(d/transact datomic-connection
+                   datomic-tx))
+    (edn/response {:status :ok})))
+
 (defn ring-handler
   [system-value request]
-  (let [con (:datomic/con system-value)]
-    (handle-command
-     {:example/command! example-command-handler
-      :todo/done! (partial todo-item/done!
-                           con)
-      :todo/active! (partial todo-item/active!
-                             con)
-      :todo/delete! (partial todo-item/delete!
-                             con)
-      :todo/edit! (partial todo-item/edit!
-                           con)
-      :todo/new! (partial todo-item/new!
-                          con)
-      ;; NOTE: register new command handler here.
-      }
-     request)))
+  (handle-command
+   (partial command-handler!
+            (:datomic/con system-value)
+            (merge todo-item/command-effects
+                   {:example/command! example-command-handler}
+                   ;; NOTE: register new command effects
+                   ;;       here.
+                   ))
+   request))
 
 (comment
   ;; Example of creating and invoking a command:
