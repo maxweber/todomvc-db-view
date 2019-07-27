@@ -13,4 +13,12 @@
    {:db/ident :todo/done
     :db/valueType :db.type/boolean
     :db/cardinality :db.cardinality/one
-    :db/doc "Marks the TODO entry as done."}])
+    :db/doc "Marks the TODO entry as done."}
+
+   {:db/ident :command/uuid
+    :db/valueType :db.type/uuid
+    :db/unique :db.unique/value
+    :db/cardinality :db.cardinality/one
+    :db/doc "Ensures that the command is transacted at most once."}
+
+   ])

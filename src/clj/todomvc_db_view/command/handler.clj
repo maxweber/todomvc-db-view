@@ -65,6 +65,14 @@
   (println "example-command-handler"
            (edn/pr-str command)))
 
+(defn add-command-uuid
+  "Adds the `:command/uuid` to the `datomic-tx` to ensure that the
+   command is transacted at most once (avoids replay attacks)."
+  [datomic-tx command]
+  (cons
+   [:db/add "datomic.tx" :command/uuid (:command/uuid command)]
+   datomic-tx))
+
 (defn command-handler!
   "A command-effect may perform side-effects and may return a Datomic
    transaction that will be transacted by this command-handler."
@@ -72,7 +80,8 @@
   (when-let [command-effect (get-command-effect (:command/type command))]
     (when-let [datomic-tx (command-effect command)]
       @(d/transact datomic-connection
-                   datomic-tx))
+                   (add-command-uuid datomic-tx
+                                     command)))
     (edn/response {:status :ok})))
 
 (defn ring-handler

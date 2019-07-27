@@ -1,6 +1,7 @@
 (ns todomvc-db-view.command.crypto
   (:require [todomvc-db-view.util.edn :as edn]
-            [todomvc-db-view.util.aes :as aes]))
+            [todomvc-db-view.util.aes :as aes]
+            [datomic.api :as d]))
 
 ;; Concept:
 ;;
@@ -45,10 +46,14 @@
    ))
 
 (defn encrypt-command
-  "Encrypts a `command-map`."
+  "Encrypts a `command-map` with a new `:command/uuid`."
   [command-map]
   (aes/encrypt-string @the-key
-                      (edn/pr-str command-map)))
+                      (edn/pr-str
+                       (assoc command-map
+                              ;; Used to ensure that the command is
+                              ;; transacted at most once:
+                              :command/uuid (d/squuid)))))
 
 (defn decrypt-command
   "Decrypts an `encrypted-command-string`. Throws an exception if the
