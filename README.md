@@ -1,7 +1,7 @@
 # todomvc-db-view
 
 An example app that demonstrates the db-view approach and implements a
-frontend and a backend for the well-known todomvc app.
+frontend and a backend for the well-known todomvc example app.
 
 ## Install
 

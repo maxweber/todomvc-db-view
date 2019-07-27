@@ -1,5 +1,5 @@
 (defproject todomvc-db-view "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "An example app that demonstrates the db-view approach and implements a frontend and a backend for the well-known todomvc example app."
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [http-kit "2.3.0"]
                  [ring/ring-core "1.7.1"]
