@@ -126,38 +126,34 @@
                                                                 :todo/edit!]))))))
                      :on-stop #(reset! editing false)}])])))
 
-(defn todo-app [props]
-  (let [filt (r/atom :all)]
-    (fn []
-      (let [todo-list @todo-list-cursor
-            items (:todo/list-items todo-list)
-            ;; done (->> items (filter :done) count)
-            ;; active (- (count items) done)
-            ]
+(defn todo-app []
+  (let [todo-list @todo-list-cursor
+        items (:todo/list-items todo-list)
+        ]
+    [:div
+     [:section#todoapp
+      [:header#header
+       [:h1 "todos"]
+       [todo-input {:id "new-todo"
+                    :placeholder "What needs to be done?"
+                    :on-save add-todo}]]
+      (when (-> items count pos?)
         [:div
-         [:section#todoapp
-          [:header#header
-           [:h1 "todos"]
-           [todo-input {:id "new-todo"
-                        :placeholder "What needs to be done?"
-                        :on-save add-todo}]]
-          (when (-> items count pos?)
-            [:div
-             [:section#main
-              [:input#toggle-all
-               (let [active-todo-items? (pos? (:todo/active-count todo-list))]
-                 {:type "checkbox"
-                  :checked active-todo-items?
-                  :on-change (fn [_]
-                               (send-command!
-                                (if active-todo-items?
-                                  (:todo/complete-all! todo-list)
-                                  (:todo/activate-all! todo-list))))})]
-              [:label {:for "toggle-all"} "Mark all as complete"]
-              [:ul#todo-list
-               (for [todo items]
-                 ^{:key (:db/id todo)} [todo-item todo])]]
-             [:footer#footer
-              [todo-stats]]])]
-         [:footer#info
-          [:p "Double-click to edit a todo"]]]))))
+         [:section#main
+          [:input#toggle-all
+           (let [active-todo-items? (pos? (:todo/active-count todo-list))]
+             {:type "checkbox"
+              :checked active-todo-items?
+              :on-change (fn [_]
+                           (send-command!
+                            (if active-todo-items?
+                              (:todo/complete-all! todo-list)
+                              (:todo/activate-all! todo-list))))})]
+          [:label {:for "toggle-all"} "Mark all as complete"]
+          [:ul#todo-list
+           (for [todo items]
+             ^{:key (:db/id todo)} [todo-item todo])]]
+         [:footer#footer
+          [todo-stats]]])]
+     [:footer#info
+      [:p "Double-click to edit a todo"]]]))
