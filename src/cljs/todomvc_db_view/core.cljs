@@ -29,22 +29,6 @@
                                 :todo/new
                                 :todo/new!])))))
 
-(defn toggle
-  [id]
-  (swap! todos update-in [id :done] not))
-
-(defn save
-  [id title]
-  (swap! todos assoc-in [id :title] title))
-
-(defn delete
-  [id]
-  (swap! todos dissoc id))
-
-(defn mmap [m f a] (->> m (f a) (into (empty m))))
-(defn complete-all [v] (swap! todos mmap map #(assoc-in % [1 :done] v)))
-(defn clear-done [] (swap! todos mmap remove #(get-in % [1 :done])))
-
 (defn todo-input [{:keys [title on-save on-stop]}]
   (let [val (r/atom title)
         stop #(do (reset! val "")
