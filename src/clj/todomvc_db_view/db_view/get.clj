@@ -15,16 +15,16 @@
 
 (defn get-view
   "Main entry point to gather the db-view-value for the client. Based on
-   the given Datomic database value `db` and the `db-view-params` from
+   the given Datomic database value `db` and the `db-view-input` from
    the client."
-  [db db-view-params]
+  [db db-view-input]
   (merge
    (todo-list/get-view db
-                       db-view-params)
+                       db-view-input)
    (todo-edit/get-view db
-                       db-view-params)
+                       db-view-input)
    (todo-new/get-view db
-                      db-view-params)
+                      db-view-input)
    ;; NOTE: add other db-view parts here.
    ))
 
@@ -37,9 +37,9 @@
     ;; NOTE: for a production app rather use
     ;;       [Transit](https://github.com/cognitect/transit-format)
     ;;       here instead of EDN:
-    (let [db-view-params (edn/read-string (slurp (:body request)))]
+    (let [db-view-input (edn/read-string (slurp (:body request)))]
       ;; NOTE: for a production app do the appropriate authorization
       ;;       checks:
       (edn/response
        (get-view db
-                 db-view-params)))))
+                 db-view-input)))))

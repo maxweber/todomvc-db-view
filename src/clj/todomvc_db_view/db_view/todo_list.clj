@@ -74,8 +74,8 @@
 
 (defn get-view
   "Returns the db-view for the todo list UI."
-  [db db-view-params]
-  (when-let [params (:todo/list db-view-params)]
+  [db db-view-input]
+  (when-let [params (:todo/list db-view-input)]
     (let [active-eids (q-active db)
           todo-filter (:todo/filter params
                         :all)

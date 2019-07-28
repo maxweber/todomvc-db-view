@@ -4,8 +4,8 @@
 
 (defn get-view
   "Returns the db-view for the todo list UI."
-  [db db-view-params]
-  (when-let [params (:todo/new db-view-params)]
+  [db db-view-input]
+  (when-let [params (:todo/new db-view-input)]
     {:todo/new {:todo/new! (command/encrypt-command
                              (merge
                                {:command/type :todo/new!}

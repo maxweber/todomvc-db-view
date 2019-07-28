@@ -4,8 +4,8 @@
 
 (defn get-view
   "Returns the db-view for the todo list UI."
-  [db db-view-params]
-  (when-let [params (:todo/edit db-view-params)]
+  [db db-view-input]
+  (when-let [params (:todo/edit db-view-input)]
     (when (and (string? (:todo/title params))
                (integer? (:db/id params))
                ;; is a todo entity?
