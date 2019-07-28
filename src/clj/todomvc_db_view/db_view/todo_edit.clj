@@ -3,7 +3,8 @@
             [datomic.api :as d]))
 
 (defn get-view
-  "Returns the db-view for the todo list UI."
+  "Provides the db-view to validate the input for a `:todo/edit!`
+   command."
   [db db-view-input]
   (when-let [params (:todo/edit db-view-input)]
     (when (and (string? (:todo/title params))
