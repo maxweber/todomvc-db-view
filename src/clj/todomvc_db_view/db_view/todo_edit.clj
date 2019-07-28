@@ -11,6 +11,8 @@
                (integer? (:db/id params))
                ;; is a todo entity?
                (:todo/title (d/entity db (:db/id params))))
+      ;; Example validation to ensure that the `:todo/title` is longer
+      ;; than 2 characters:
       (if (> (count (:todo/title params)) 2)
         {:todo/edit {:todo/edit! (command/encrypt-command
                                    (merge
