@@ -7,17 +7,17 @@
 ;; Concept:
 ;;
 ;; Gets and refreshes the db-view from the server. Provides the server
-;; API endpoint '/db-view/get' with the `:db-view/params` entry from
-;; the app state. Receives the `:db-view/value` in the API response
+;; API endpoint '/db-view/get' with the `:db-view/input` entry from
+;; the app state. Receives the `:db-view/output` in the API response
 ;; and stores it in the app state. Reagent will trigger a rerender of
-;; all UI components that depend on the `:db-view/value` (if the
+;; all UI components that depend on the `:db-view/output` (if the
 ;; corresponding data has changed). Thereby the UI will contain the
 ;; latest state from the database to avoid sections with stale data.
 
 (defn get-view
   "Provides the server API endpoint '/db-view/get' with the
-   `:db-view/params` entry from the app state and returns the API
-   response that contains the `:db-view/value`."
+   `:db-view/input` entry from the app state and returns the API
+   response that contains the `:db-view/output`."
   [state-value]
   (go
     (let [response (<! (http/request
@@ -28,20 +28,20 @@
 
                          ;; NOTE: for a production app prefer the
                          ;;       Transit format:
-                         :edn-params (:db-view/params state-value)}))]
+                         :edn-params (:db-view/input state-value)}))]
       (:body response))))
 
 (defn refresh!
   "Provides the server API endpoint '/db-view/get' with the
-   `:db-view/params` entry from the app state, receives the
-   `:db-view/value` from the API response and stores it in the app
+   `:db-view/input` entry from the app state, receives the
+   `:db-view/output` from the API response and stores it in the app
    state."
   []
   (go
-    (:db-view/value
+    (:db-view/output
      (swap! state/state
             assoc
-            :db-view/value
+            :db-view/output
             (<! (get-view @state/state))))))
 
 

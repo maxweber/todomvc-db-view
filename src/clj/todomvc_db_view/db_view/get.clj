@@ -29,8 +29,8 @@
    ))
 
 (defn ring-handler
-  "Ring handler to get the `:db-view/value` for the given
-   `:db-view/params` in the `request` body."
+  "Ring handler to get the `:db-view/output` for the given
+   `:db-view/input` in the `request` body."
   [db request]
   (when (and (= (:request-method request) :post)
              (= (:uri request) "/db-view/get"))

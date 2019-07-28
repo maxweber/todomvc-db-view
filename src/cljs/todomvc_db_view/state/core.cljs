@@ -7,7 +7,7 @@
 ;; state of this ClojureScript app.
 
 (def initial-state-value
-  {:db-view/params {:todo/list {}}})
+  {:db-view/input {:todo/list {}}})
 
 (defonce state
   (r/atom initial-state-value))

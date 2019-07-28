@@ -4,7 +4,7 @@
 
 ;; Concept:
 ;;
-;; Helper namespace to send a command map (from the `:db-view/value`)
+;; Helper namespace to send a command map (from the `:db-view/output`)
 ;; to the server.
 
 (defn send!

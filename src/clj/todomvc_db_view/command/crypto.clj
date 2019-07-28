@@ -14,12 +14,12 @@
 ;; for validation. Only the server creates command maps and the client
 ;; does not need to add additonal entries to the command map. If the
 ;; user likes to change his last name for example, the client adds the
-;; new last name to the `:db-view/params` and refreshes the
+;; new last name to the `:db-view/input` and refreshes the
 ;; db-view. The server can validate the new last name and return an
 ;; encrypted command map with the new last name in the
-;; `:db-view/value`. The client can send this command map to the
+;; `:db-view/output`. The client can send this command map to the
 ;; '/command' API endpoint to execute the renaming. In the case of a
-;; validation error the server would return it in the `:db-view/value`
+;; validation error the server would return it in the `:db-view/output`
 ;; instead of returning an encrypted command map. Some validation
 ;; types still needs to be re-checked on the server, for example if
 ;; you like to ensure unique names. However the '/command' API
@@ -32,10 +32,10 @@
 ;; server can just exclude the corresponding command map from the
 ;; db-view. The client UI only shows the corresponding button or input
 ;; field, if the corresponding command map is in the
-;; `:db-view/value`. The '/command' API endpoint does not re-check if
+;; `:db-view/output`. The '/command' API endpoint does not re-check if
 ;; the user is allowed to do this command, since the user would not
 ;; never receive the corresponding encrypted command via the
-;; `:db-view/value`. Expiration dates in the command maps can be used
+;; `:db-view/output`. Expiration dates in the command maps can be used
 ;; to enforce authorization changes in a given timeout.
 
 (defonce the-key

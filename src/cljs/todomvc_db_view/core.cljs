@@ -19,13 +19,13 @@
   [title]
   (swap! state/state
          assoc-in
-         [:db-view/params
+         [:db-view/input
           :todo/new]
          {:todo/title title})
   (go
     (<! (db-view/refresh!))
     (<! (send-command! (get-in @state/state
-                               [:db-view/value
+                               [:db-view/output
                                 :todo/new
                                 :todo/new!])))))
 
@@ -63,11 +63,11 @@
                                nil)}])))
 
 (def todo-list-cursor
-  (state/cursor [:db-view/value
+  (state/cursor [:db-view/output
                  :todo/list]))
 
 (def todo-list-params-cursor
-  (state/cursor [:db-view/params
+  (state/cursor [:db-view/input
                  :todo/list]))
 
 (def todo-edit (with-meta todo-input
@@ -126,18 +126,18 @@
                      :on-save (fn [new-title]
                                 (swap! state/state
                                        assoc-in
-                                       [:db-view/params
+                                       [:db-view/input
                                         :todo/edit]
                                        {:todo/title new-title
                                         :db/id id})
                                 (go
                                   (<! (db-view/refresh!))
-                                  (if-let [error (get-in @state/state [:db-view/value
+                                  (if-let [error (get-in @state/state [:db-view/output
                                                                        :todo/edit
                                                                        :error])]
                                     (js/alert error)
                                     (<! (send-command! (get-in @state/state
-                                                               [:db-view/value
+                                                               [:db-view/output
                                                                 :todo/edit
                                                                 :todo/edit!]))))))
                      :on-stop #(reset! editing false)}])])))

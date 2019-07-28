@@ -9,7 +9,7 @@
 ;; in the Datomic transaction log, which affect their current
 ;; logged-in user.
 ;;
-;; Thereby the client can refresh the `:db-view/value` as soon as it
+;; Thereby the client can refresh the `:db-view/output` as soon as it
 ;; is notified by this API endpoint. HTTP long polling is used here to
 ;; allow the server to push a message to the client. It is less
 ;; complex to implement in comparison to WebSockets and the low

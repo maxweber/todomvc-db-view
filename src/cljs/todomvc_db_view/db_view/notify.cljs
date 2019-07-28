@@ -18,7 +18,7 @@
 
 (defn start-listening
   "Starts a go-loop that opens a long-polling request to the
-   '/db-view/notify' API endpoint. Refreshes the `:db-view/value` in
+   '/db-view/notify' API endpoint. Refreshes the `:db-view/output` in
    the app state, when it receives a HTTP 200 response. Sleeps for a
    short moment, when it receives an error response to not DDoS the
    server in the case of a server issue."
