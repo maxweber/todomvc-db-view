@@ -34,6 +34,24 @@
   (set-done-tx (:datomic/db command)
                false))
 
+(defn q-completed-todo-item-eids
+  "Returns the entity ids of completed todo items."
+  [db]
+  (d/q
+   '[:find
+     [?e ...]
+     :where
+     [?e :todo/done true]]
+   db))
+
+(defn clear-completed-tx
+  [command]
+  (map
+   (fn [eid]
+     [:db/retractEntity eid])
+   (q-completed-todo-item-eids (:datomic/db command))))
+
 (def command-effects
   {:todo/activate-all! activate-all-tx
-   :todo/complete-all! complete-all-tx})
+   :todo/complete-all! complete-all-tx
+   :todo/clear-completed! clear-completed-tx})

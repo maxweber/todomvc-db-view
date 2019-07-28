@@ -93,7 +93,8 @@
                                         {:command/type :todo/complete-all!})
                    :todo/activate-all! (command/encrypt-command
                                         {:command/type :todo/activate-all!})
-                   }})))
+                   :todo/clear-completed! (command/encrypt-command
+                                           {:command/type :todo/clear-completed!})}})))
 
 (comment
   (require '[clj-http.client :as http])

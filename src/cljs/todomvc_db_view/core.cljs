@@ -72,21 +72,23 @@
         props-for (fn [name]
                     {:class (if (= name selected) "selected")
                      :on-click (fn [_e]
-                                 (select-filter! name))})]
+                                 (select-filter! name))})
+        active-count (:todo/active-count @todo-list-cursor)]
     [:div
-     (let [active-count (:todo/active-count @todo-list-cursor)]
-       [:span#todo-count
-        [:strong active-count] " " (case active-count
-                                     1
-                                     "item"
-                                     "items") " left"])
+     [:span#todo-count
+      [:strong active-count] " " (case active-count
+                                   1
+                                   "item"
+                                   "items") " left"]
      [:ul#filters
       [:li [:a (props-for :all) "All"]]
       [:li [:a (props-for :active) "Active"]]
       [:li [:a (props-for :completed) "Completed"]]]
-     #_(when (pos? done)
-         [:button#clear-completed {:on-click clear-done}
-          "Clear completed " done])]))
+     (when (pos? active-count)
+       [:button#clear-completed
+        {:on-click (fn [_]
+                     (send-command! (:todo/clear-completed! @todo-list-cursor)))}
+        "Clear completed " active-count])]))
 
 (defn todo-item []
   (let [editing (r/atom false)]
