@@ -2,6 +2,7 @@
   (:require [todomvc-db-view.command.crypto :as crypto]
             [todomvc-db-view.util.edn :as edn]
             [todomvc-db-view.command.todo-item :as todo-item]
+            [todomvc-db-view.command.todo-items :as todo-items]
             [datomic.api :as d]))
 
 ;; Concept:
@@ -78,7 +79,11 @@
    transaction that will be transacted by this command-handler."
   [datomic-connection get-command-effect command]
   (when-let [command-effect (get-command-effect (:command/type command))]
-    (when-let [datomic-tx (command-effect command)]
+    (when-let [datomic-tx (command-effect
+                           (assoc command
+                                  ;; provides the current db-value to
+                                  ;; the command effect function:
+                                  :datomic/db (d/db datomic-connection)))]
       @(d/transact datomic-connection
                    (add-command-uuid datomic-tx
                                      command)))
@@ -90,6 +95,7 @@
    (partial command-handler!
             (:datomic/con system-value)
             (merge todo-item/command-effects
+                   todo-items/command-effects
                    {:example/command! example-command-handler}
                    ;; NOTE: register new command effects
                    ;;       here.

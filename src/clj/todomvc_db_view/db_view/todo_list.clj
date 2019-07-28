@@ -78,7 +78,7 @@
   (when-let [params (:todo/list db-view-input)]
     (let [active-eids (q-active db)
           todo-filter (:todo/filter params
-                        :all)
+                                    :all)
           eids (case todo-filter
                  :active
                  active-eids
@@ -88,7 +88,12 @@
                  (q-all db))]
       {:todo/list {:todo/list-items (prepare-todo-items db
                                                         eids)
-                   :todo/active-count (count active-eids)}})))
+                   :todo/active-count (count active-eids)
+                   :todo/complete-all! (command/encrypt-command
+                                        {:command/type :todo/complete-all!})
+                   :todo/activate-all! (command/encrypt-command
+                                        {:command/type :todo/activate-all!})
+                   }})))
 
 (comment
   (require '[clj-http.client :as http])

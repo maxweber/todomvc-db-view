@@ -129,7 +129,8 @@
 (defn todo-app [props]
   (let [filt (r/atom :all)]
     (fn []
-      (let [items (:todo/list-items @todo-list-cursor)
+      (let [todo-list @todo-list-cursor
+            items (:todo/list-items todo-list)
             ;; done (->> items (filter :done) count)
             ;; active (- (count items) done)
             ]
@@ -143,8 +144,15 @@
           (when (-> items count pos?)
             [:div
              [:section#main
-              #_[:input#toggle-all {:type "checkbox" :checked (zero? active)
-                                    :on-change #(complete-all (pos? active))}]
+              [:input#toggle-all
+               (let [active-todo-items? (pos? (:todo/active-count todo-list))]
+                 {:type "checkbox"
+                  :checked active-todo-items?
+                  :on-change (fn [_]
+                               (send-command!
+                                (if active-todo-items?
+                                  (:todo/complete-all! todo-list)
+                                  (:todo/activate-all! todo-list))))})]
               [:label {:for "toggle-all"} "Mark all as complete"]
               [:ul#todo-list
                (for [todo items]
