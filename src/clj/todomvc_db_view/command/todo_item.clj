@@ -1,5 +1,4 @@
-(ns todomvc-db-view.command.todo-item
-  (:require [datomic.api :as d]))
+(ns todomvc-db-view.command.todo-item)
 
 (defn done-tx
   "Transaction to mark the todo item as done."
