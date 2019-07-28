@@ -77,18 +77,20 @@
   [db db-view-input]
   (when-let [params (:todo/list db-view-input)]
     (let [active-eids (q-active db)
+          complete-eids (q-completed db)
           todo-filter (:todo/filter params
                                     :all)
           eids (case todo-filter
                  :active
                  active-eids
                  :completed
-                 (q-completed db)
+                 complete-eids
                  :all
                  (q-all db))]
       {:todo/list {:todo/list-items (prepare-todo-items db
                                                         eids)
                    :todo/active-count (count active-eids)
+                   :todo/completed-count (count complete-eids)
                    :todo/complete-all! (command/encrypt-command
                                         {:command/type :todo/complete-all!})
                    :todo/activate-all! (command/encrypt-command

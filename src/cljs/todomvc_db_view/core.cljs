@@ -73,7 +73,8 @@
                     {:class (if (= name selected) "selected")
                      :on-click (fn [_e]
                                  (select-filter! name))})
-        active-count (:todo/active-count @todo-list-cursor)]
+        todo-list @todo-list-cursor
+        active-count (:todo/active-count todo-list)]
     [:div
      [:span#todo-count
       [:strong active-count] " " (case active-count
@@ -87,8 +88,8 @@
      (when (pos? active-count)
        [:button#clear-completed
         {:on-click (fn [_]
-                     (send-command! (:todo/clear-completed! @todo-list-cursor)))}
-        "Clear completed " active-count])]))
+                     (send-command! (:todo/clear-completed! todo-list)))}
+        "Clear completed " (:todo/completed-count todo-list)])]))
 
 (defn todo-item []
   (let [editing (r/atom false)]
