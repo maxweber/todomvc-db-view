@@ -140,7 +140,7 @@
                     :placeholder "What needs to be done?"
                     :on-save add-todo}]]
       (when (-> items count pos?)
-        [:div
+        [:<>
          [:section#main
           [:input#toggle-all
            (let [active-todo-items? (pos? (:todo/active-count todo-list))]
@@ -154,8 +154,8 @@
           [:label {:for "toggle-all"} "Mark all as complete"]
           [:ul#todo-list
            (for [todo items]
-             ^{:key (:db/id todo)} [todo-item todo])]]
-         [:footer#footer
-          [todo-stats]]])]
+             ^{:key (:db/id todo)} [todo-item todo])]]])
+      [:footer#footer
+       [todo-stats]]]
      [:footer#info
       [:p "Double-click to edit a todo"]]]))
