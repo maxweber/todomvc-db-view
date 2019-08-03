@@ -1,6 +1,10 @@
 (ns todomvc-db-view.command.todo-items
   (:require [datomic.api :as d]))
 
+;; Concept:
+;;
+;; Contains the command transactions for a collection of todo items.
+
 (defn q-todo-item-eids
   "Returns the entity ids of all todo items."
   [db]
@@ -25,11 +29,13 @@
    (q-todo-item-eids db)))
 
 (defn complete-all-tx
+  "Transaction to mark all todo items as completed."
   [command]
   (set-done-tx (:datomic/db command)
                true))
 
 (defn activate-all-tx
+  "Transaction to mark all todo items as active."
   [command]
   (set-done-tx (:datomic/db command)
                false))
@@ -45,6 +51,7 @@
    db))
 
 (defn clear-completed-tx
+  "Transaction to remove all todo items which are marked as completed."
   [command]
   (map
    (fn [eid]

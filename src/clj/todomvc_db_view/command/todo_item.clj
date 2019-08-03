@@ -1,5 +1,9 @@
 (ns todomvc-db-view.command.todo-item)
 
+;; Concept:
+;;
+;; Contains the command transactions for a todo item.
+
 (defn done-tx
   "Transaction to mark the todo item as done."
   [command]
