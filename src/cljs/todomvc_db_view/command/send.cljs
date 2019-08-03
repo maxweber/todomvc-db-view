@@ -4,12 +4,11 @@
 
 ;; Concept:
 ;;
-;; Helper namespace to send an encrypted command map (from the
-;; `:db-view/output`) to the server.
+;; Helper namespace to send an encrypted command map to the server.
 
 (defn send!
-  "Sends the `encrypted-command` map to the server, returns the response body or
-   `false` if the request failed."
+  "Sends the `encrypted-command` map to the server, returns a channel
+   with the response body or `false` if the request failed."
   [encrypted-command]
   (go
     ;; TODO: add retries:
