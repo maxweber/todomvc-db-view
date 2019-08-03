@@ -5,10 +5,6 @@
             [todomvc-db-view.command.send :as command])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(defonce todos (r/atom (sorted-map)))
-
-(defonce counter (r/atom 0))
-
 (defn add-todo
   [title]
   (swap! state/state
