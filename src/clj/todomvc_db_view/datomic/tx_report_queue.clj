@@ -19,7 +19,8 @@
             (notify/notify tx-report)
             (catch Exception e
               ;; Note: use proper logging here for a production app:
-              (println "warning: notify for tx-report failed")))
+              (println "warning: notify for tx-report failed"
+                       e)))
           (recur)))))
   (fn stop-fn []
     (.put tx-report-queue
