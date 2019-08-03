@@ -14,9 +14,9 @@
                       (. js/document (getElementById "app"))))
 
 (defn ^:export init []
-  ;; init is called ONCE when the page loads
-  ;; this is called in the index.html and must be exported
-  ;; so it is available even in :advanced release builds
+  ;; init is called ONCE when the page loads, it is called in the
+  ;; index.html and must be exported so it is available even in
+  ;; :advanced release builds.
   (go
     (<! (db-view/refresh!))
     (notify/start-listening)
