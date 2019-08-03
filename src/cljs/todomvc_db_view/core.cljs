@@ -9,12 +9,6 @@
 
 (defonce counter (r/atom 0))
 
-(defn send-command!
-  "Sends an encrypted command map to the server."
-  [command]
-  (go
-    (<! (command/send! command))))
-
 (defn add-todo
   [title]
   (swap! state/state
@@ -24,7 +18,7 @@
          {:todo/title title})
   (go
     (<! (db-view/refresh!))
-    (<! (send-command! (get-in @state/state
+    (<! (command/send! (get-in @state/state
                                [:db-view/output
                                 :todo/new
                                 :todo/new!])))))
@@ -88,7 +82,7 @@
      (when (pos? active-count)
        [:button#clear-completed
         {:on-click (fn [_]
-                     (send-command! (:todo/clear-completed! todo-list)))}
+                     (command/send! (:todo/clear-completed! todo-list)))}
         "Clear completed " (:todo/completed-count todo-list)])]))
 
 (defn todo-item []
@@ -101,13 +95,13 @@
                         :checked done
                         :on-change (fn [_e]
                                      (if done!
-                                       (send-command! done!)
-                                       (send-command! active!)))}]
+                                       (command/send! done!)
+                                       (command/send! active!)))}]
         [:label {:on-double-click #(reset! editing true)} title]
 
         [:button.destroy {:on-click
                           (fn []
-                            (send-command! delete!))}]]
+                            (command/send! delete!))}]]
        (when @editing
          [todo-edit {:class "edit" :title title
                      :on-save (fn [new-title]
@@ -123,7 +117,7 @@
                                                                        :todo/edit
                                                                        :error])]
                                     (js/alert error)
-                                    (<! (send-command! (get-in @state/state
+                                    (<! (command/send! (get-in @state/state
                                                                [:db-view/output
                                                                 :todo/edit
                                                                 :todo/edit!]))))))
@@ -148,7 +142,7 @@
              {:type "checkbox"
               :checked active-todo-items?
               :on-change (fn [_]
-                           (send-command!
+                           (command/send!
                             (if active-todo-items?
                               (:todo/complete-all! todo-list)
                               (:todo/activate-all! todo-list))))})]
