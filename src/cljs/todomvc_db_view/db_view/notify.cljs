@@ -12,14 +12,14 @@
 ;; the client everytime, when a transaction contains something
 ;; relevant for the current logged-in user.
 ;;
-;; Due to this mechanism the client can reflect changes that where
-;; issued by the server (a finished background job for example) or a
-;; change by another user.
+;; Due to this mechanism the client can show updates that where issued
+;; by the server (a finished background job for example or a change by
+;; another user).
 
 (defn start-listening
   "Starts a go-loop that opens a long-polling request to the
-   '/db-view/notify' API endpoint. Refreshes the `:db-view/output` in
-   the app state, when it receives a HTTP 200 response. Sleeps for a
+   '/db-view/notify' API endpoint. Refreshes the `:db-view/output` map
+   in the app state, when it receives a HTTP 200 response. Sleeps for a
    short moment, when it receives an error response to not DDoS the
    server in the case of a server issue."
   []
