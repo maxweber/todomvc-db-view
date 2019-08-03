@@ -64,11 +64,11 @@
                       {:command/type :todo/done!
                        :db/id (:db/id todo-list-item)})}
         {:todo/active! (command/encrypt-command
-                         {:command/type :todo/active!
-                          :db/id (:db/id todo-list-item)})})
+                        {:command/type :todo/active!
+                         :db/id (:db/id todo-list-item)})})
       {:todo/delete! (command/encrypt-command
-                       {:command/type :todo/delete!
-                        :db/id (:db/id todo-list-item)})}))
+                      {:command/type :todo/delete!
+                       :db/id (:db/id todo-list-item)})}))
    (pull db
          eids)))
 
