@@ -7,16 +7,17 @@
 
 ;; Concept:
 ;;
-;; Provides the API endpoint to get the db view. The request body
-;; contains the parameters to query the database for the db-view-value
-;; that is required for the currently active UI parts. This value is
-;; returned in the response body and the client stores it in the
-;; Reagent app state atom, where the UI components can access it.
+;; Provides the API endpoint to get the db-view. The request body
+;; contains the parameters to query the database to assemble the
+;; `:db-view/output` map, that contains the required data for the
+;; current active UI parts. This value is returned in the response
+;; body and the client stores it in the Reagent app state atom, where
+;; the UI components can access it.
 
 (defn get-view
-  "Main entry point to gather the db-view-value for the client. Based on
-   the given Datomic database value `db` and the `db-view-input` from
-   the client."
+  "Main entry point to gather the `:db-view/output` map for the
+   client. Based on the given Datomic database value `db` and the
+   `:db-view/input` map from the client."
   [db db-view-input]
   (merge
    (todo-list/get-view db
@@ -29,8 +30,8 @@
    ))
 
 (defn ring-handler
-  "Ring handler to get the `:db-view/output` for the given
-   `:db-view/input` in the `request` body."
+  "Ring handler to get the `:db-view/output` map for the given
+   `:db-view/input` map in the `request` body."
   [db request]
   (when (and (= (:request-method request) :post)
              (= (:uri request) "/db-view/get"))
