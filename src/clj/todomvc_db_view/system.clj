@@ -9,7 +9,15 @@
             [datomic.api :as d]
             [ring.util.response :as response]))
 
+;; Concept:
+;;
+;; Holds the `system` map that contains all system components. A
+;; system component may have a lifecyle, so that it can be started and
+;; stopped. One system component for example is the HTTP server that
+;; frees the port, when it is stopped.
+
 (defonce system
+  ;; the atom that contains the system map:
   (atom nil))
 
 (defn dispatch
@@ -27,6 +35,7 @@
      )))
 
 (def app
+  ;; The main Ring-handler:
   (-> dispatch
       (middleware-file/wrap-file "public")))
 
@@ -51,6 +60,7 @@
             nil)))
 
 (defn restart!
+  "Restarts the system."
   []
   (stop!)
   (start!))
