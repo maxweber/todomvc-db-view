@@ -5,6 +5,10 @@
             [buddy.core.hash :as hash]
             [buddy.core.codecs.base64 :as base64]))
 
+;; Concept:
+;;
+;; Provides helper functions to use the AES encryption.
+
 (defn base64-string
   "Decodes `byte-array` as Base64 string."
   [byte-array]

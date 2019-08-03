@@ -3,6 +3,10 @@
             [clojure.pprint :as pprint])
   (:refer-clojure :exclude [read read-string pr-str]))
 
+;; Concept:
+;;
+;; Provides helper functions for the EDN data format.
+
 (defn read-string
   "Same as `clojure.edn/read-string` except that it sets
    `clojure.core/tagged-literal` as `:default` tag reader. Thereby this
