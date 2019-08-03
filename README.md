@@ -8,7 +8,7 @@ frontend and a backend for the well-known todomvc example app.
 Run once:
 
 ``` shell
-yarn deps
+yarn
 ```
 
 to install all npm dependencies.

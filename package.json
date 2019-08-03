@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "deps": "yarn install",
     "watch": "shadow-cljs watch app;",
     "release": "shadow-cljs release app;",
     "server": "shadow-cljs server;",
