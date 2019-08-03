@@ -121,8 +121,7 @@
 
 (defn todo-app []
   (let [todo-list @todo-list-cursor
-        items (:todo/list-items todo-list)
-        ]
+        todo-items (:todo/list-items todo-list)]
     [:div
      [:section#todoapp
       [:header#header
@@ -130,7 +129,7 @@
        [todo-input {:id "new-todo"
                     :placeholder "What needs to be done?"
                     :on-save add-todo}]]
-      (when (-> items count pos?)
+      (when (seq todo-items)
         [:<>
          [:section#main
           [:input#toggle-all
@@ -144,7 +143,7 @@
                               (:todo/activate-all! todo-list))))})]
           [:label {:for "toggle-all"} "Mark all as complete"]
           [:ul#todo-list
-           (for [todo items]
+           (for [todo todo-items]
              ^{:key (:db/id todo)} [todo-item todo])]]])
       [:footer#footer
        [todo-stats]]]
