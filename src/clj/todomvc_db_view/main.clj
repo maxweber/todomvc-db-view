@@ -5,7 +5,7 @@
 
 ;; Concept:
 ;;
-;; Starts and stops the system.
+;; Starts and stops the system (production mode).
 
 (def shutdown-hook
   ;; stops the system on a JVM shutdown:
