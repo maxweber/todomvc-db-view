@@ -9,10 +9,11 @@
   (when-let [params (:todo/edit db-view-input)]
     (when (and (string? (:todo/title params))
                (integer? (:db/id params))
-               ;; is a todo entity?
+               ;; is it a todo item entity?
                (:todo/title (d/entity db (:db/id params))))
-      ;; Example validation to ensure that the `:todo/title` is longer
-      ;; than 2 characters:
+      ;; Example for a validation which ensures that the `:todo/title`
+      ;; is longer than 2 characters after it has been edited in the
+      ;; client:
       (if (> (count (:todo/title params)) 2)
         {:todo/edit {:todo/edit! (command/encrypt-command
                                    (merge
