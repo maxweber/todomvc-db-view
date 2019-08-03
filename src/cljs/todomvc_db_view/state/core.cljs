@@ -14,7 +14,7 @@
 
 (defn cursor
   "Creates a Reagent cursor for the app state with the help of
-  `reagent.core/cursor`. The `path` can be a single key(word) or a
+   `reagent.core/cursor`. The `path` can be a single key(word) or a
    vector of keys."
   [path]
   (r/cursor state
