@@ -28,16 +28,8 @@
 
 (defn handle-command
   "Provides a Ring-handler that receives an encrypted command map and
-   executes it. Expects a POST request with an EDN encoded `:body`,
-   which includes a map with an entry `:command/encrypted` that has the
-   `encrypted-command-string` as value.
-
-   Throws exceptions if:
-
-   - it receives an invalid EDN encoded `:body`
-
-   - the decryption of the `encrypted-command-string` fails, meaning
-     it probably was manipulated."
+   executes it. Expects a POST request with the encrypted command map
+   as `:body`. Throws an exception, if the decryption fails."
   [command-handler! request]
   (when (and (= (:request-method request) :post)
              (= (:uri request) "/command"))
@@ -46,8 +38,7 @@
     ;;       ensured. Adding a check-authentication here, would also
     ;;       mean that this endpoint could not handle use cases
     ;;       without authentication like a user registration form.
-    (let [params (edn/read-string (slurp (:body request)))
-          encrypted-command-string (:command/encrypted params)
+    (let [encrypted-command-string (slurp (:body request))
           command (crypto/decrypt-command encrypted-command-string)]
       (command-handler! command))))
 

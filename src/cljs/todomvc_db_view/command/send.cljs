@@ -4,19 +4,19 @@
 
 ;; Concept:
 ;;
-;; Helper namespace to send a command map (from the `:db-view/output`)
-;; to the server.
+;; Helper namespace to send an encrypted command map (from the
+;; `:db-view/output`) to the server.
 
 (defn send!
-  "Sends the `command` map to the server, returns the response body or
+  "Sends the `encrypted-command` map to the server, returns the response body or
    `false` if the request failed."
-  [command]
+  [encrypted-command]
   (go
     ;; TODO: add retries:
     (let [response (<! (http/request
-                         {:request-method :post
-                          :url "/command"
-                          :edn-params {:command/encrypted command}}))]
+                        {:request-method :post
+                         :url "/command"
+                         :body encrypted-command}))]
       (if (= (:status response)
              200)
         (:body response)
