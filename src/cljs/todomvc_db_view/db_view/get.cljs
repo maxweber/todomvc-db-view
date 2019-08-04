@@ -23,7 +23,7 @@
                         {:request-method :post
                          :url "/db-view/get"
                          ;; NOTE: for a production app add authorization here:
-                         ;; :headers {"Authorization" ""}
+                         ;; :headers {"Authorization" "..."}
 
                          ;; NOTE: for a production app prefer the
                          ;;       Transit format:
