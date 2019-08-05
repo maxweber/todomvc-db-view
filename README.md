@@ -30,7 +30,9 @@ To start the Clojure server run:
 lein repl
 ```
 
-to start a Clojure REPL via [Leiningen](https://leiningen.org/)
+to start a Clojure REPL via [Leiningen](https://leiningen.org/). The
+initial namespace will automatically start the HTTP server and other
+system components.
 
 ## License
 
