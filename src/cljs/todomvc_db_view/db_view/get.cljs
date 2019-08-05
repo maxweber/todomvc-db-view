@@ -22,10 +22,8 @@
     (let [response (<! (http/request
                         {:request-method :post
                          :url "/db-view/get"
-                         ;; NOTE: for a production app add authorization here:
-                         ;; :headers {"Authorization" "..."}
-
-                         ;; NOTE: for a production app prefer the
+                         ;; NOTE: for a production app add
+                         ;;       authorization here and prefer the
                          ;;       Transit format:
                          :edn-params (:db-view/input state-value)}))]
       (:body response))))
