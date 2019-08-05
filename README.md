@@ -1,7 +1,9 @@
 # todomvc-db-view
 
-An example app that demonstrates the db-view approach and implements a
-frontend and a backend for the well-known todomvc example app.
+An example app that demonstrates the [db-view
+approach](https://maxweber.github.io/blog/2019-07-25-introducing-db-view-part-1)
+and implements a frontend and a backend for the well-known
+[TodoMVC](http://todomvc.com/) example, an app to manage todo items.
 
 ## Install
 
