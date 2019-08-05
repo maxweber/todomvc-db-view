@@ -12,7 +12,7 @@
 ;; the client everytime, when a transaction contains something
 ;; relevant for the current logged-in user.
 ;;
-;; Due to this mechanism the client can show updates that where issued
+;; Due to this mechanism the client can show updates, which were issued
 ;; by the server (a finished background job for example or a change by
 ;; another user).
 
