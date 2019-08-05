@@ -34,6 +34,10 @@ to start a Clojure REPL via [Leiningen](https://leiningen.org/). The
 initial namespace will automatically start the HTTP server and other
 system components.
 
+To see the example app open:
+
+http://localhost:8080/
+
 ## License
 
 Copyright © 2019 Max Weber
