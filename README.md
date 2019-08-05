@@ -13,11 +13,12 @@ Run once:
 yarn
 ```
 
-to install all npm dependencies.
+to install all npm dependencies via [yarn](https://yarnpkg.com/).
 
 ## Development
 
-To start the shadow-cljs that builds the client run:
+To start the [shadow-cljs](http://shadow-cljs.org/) that builds the
+client run:
 
 ``` shell
 yarn watch
@@ -28,6 +29,8 @@ To start the Clojure server run:
 ``` shell
 lein repl
 ```
+
+to start a Clojure REPL via [Leiningen](https://leiningen.org/)
 
 ## License
 
