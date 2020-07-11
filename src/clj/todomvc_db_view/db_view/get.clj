@@ -3,7 +3,8 @@
             [todomvc-db-view.util.edn :as edn]
             [todomvc-db-view.db-view.todo-list :as todo-list]
             [todomvc-db-view.db-view.todo-edit :as todo-edit]
-            [todomvc-db-view.db-view.todo-new :as todo-new]))
+            [todomvc-db-view.db-view.todo-new :as todo-new]
+            [todomvc-db-view.datomic.connection :as con]))
 
 ;; Concept:
 ;;
@@ -32,7 +33,7 @@
 (defn ring-handler
   "Ring handler to get the `:db-view/output` map for the given
    `:db-view/input` map in the `request` body."
-  [db request]
+  [request]
   (when (and (= (:request-method request) :post)
              (= (:uri request) "/db-view/get"))
     ;; NOTE: for a production app rather use
@@ -42,5 +43,5 @@
       ;; NOTE: for a production app do the appropriate authorization
       ;;       checks:
       (edn/response
-       (get-view db
+       (get-view (con/db)
                  db-view-input)))))

@@ -1,5 +1,5 @@
 (ns todomvc-db-view.db-view.todo-new
-  (:require [todomvc-db-view.command.crypto :as command]
+  (:require [todomvc-db-view.datomic.util :as datomic-util]
             [datomic.api :as d]))
 
 (defn get-view
@@ -7,7 +7,8 @@
    todo items."
   [db db-view-input]
   (when-let [params (:todo/new db-view-input)]
-    {:todo/new {:todo/new! (command/encrypt-command
-                             (merge
-                               {:command/type :todo/new!}
-                               (select-keys params [:todo/title])))}}))
+    {:todo/new {:todo/new! [(symbol #'datomic-util/transact!)
+                            [{:db/id "new TODO"
+                              :todo/title (:todo/title params)
+                              :todo/done false}]]}}))
+

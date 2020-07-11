@@ -1,5 +1,5 @@
 (ns todomvc-db-view.db-view.todo-edit
-  (:require [todomvc-db-view.command.crypto :as command]
+  (:require [todomvc-db-view.datomic.util :as datomic-util]
             [datomic.api :as d]))
 
 (defn get-view
@@ -15,8 +15,7 @@
       ;; is longer than 2 characters after it has been edited in the
       ;; client:
       (if (> (count (:todo/title params)) 2)
-        {:todo/edit {:todo/edit! (command/encrypt-command
-                                   (merge
-                                     {:command/type :todo/edit!}
-                                     (select-keys params [:todo/title :db/id])))}}
+        {:todo/edit {:todo/edit! [(symbol #'datomic-util/transact!)
+                                  [{:db/id (:db/id params)
+                                    :todo/title (:todo/title params)}]]}}
         {:todo/edit {:error "Title must be longer than 2 characters!"}}))))

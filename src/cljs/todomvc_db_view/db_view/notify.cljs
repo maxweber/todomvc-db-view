@@ -1,6 +1,7 @@
 (ns todomvc-db-view.db-view.notify
   (:require [cljs-http.client :as http]
             [todomvc-db-view.db-view.get :as get]
+            [todomvc-db-view.state.core :as state]
             [cljs.core.async :as a])
   (:require-macros [cljs.core.async.macros :refer [go-loop]]))
 
@@ -25,10 +26,11 @@
   []
   (go-loop []
     (let [response (<! (http/request
-                         {:request-method :post
-                          :url "/db-view/notify"}))]
+                        {:request-method :post
+                         :url "/db-view/notify"}))]
       (if (= (:status response)
              200)
-        (<! (get/refresh!))
+        (when-not (:db-view/command-executing? @state/state)
+          (<! (get/refresh!)))
         (<! (a/timeout 2000)))
       (recur))))

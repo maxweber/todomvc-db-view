@@ -1,6 +1,8 @@
 (ns todomvc-db-view.db-view.todo-list
   (:require [datomic.api :as d]
-            [todomvc-db-view.command.crypto :as command]))
+            [todomvc-db-view.command.todo-items :as todo-items]
+            [todomvc-db-view.datomic.util :as datomic-util]
+            ))
 
 ;; Concept:
 ;;
@@ -21,18 +23,18 @@
 (defn commands
   "Prepares the commands for the `todo-item`."
   [todo-item]
-  (merge
-   {:todo/delete! (command/encrypt-command
-                   {:command/type :todo/delete!
-                    :db/id (:db/id todo-item)})}
-   (if-not (:todo/done todo-item)
-     {:todo/done! (command/encrypt-command
-                   {:command/type :todo/done!
-                    :db/id (:db/id todo-item)})}
-     {:todo/active! (command/encrypt-command
-                     {:command/type :todo/active!
-                      :db/id (:db/id todo-item)})})
-   ))
+  (let [db-id (:db/id todo-item)
+        transact! (symbol #'datomic-util/transact!)]
+    (merge
+     {:todo/delete! [transact!
+                     [[:db/retractEntity db-id]]
+                     ]}
+     (if-not (:todo/done todo-item)
+       {:todo/done! [transact! [{:db/id db-id
+                                 :todo/done true}]]}
+       {:todo/active! [transact! [{:db/id db-id
+                                   :todo/done false}]]})
+     )))
 
 (defn get-view
   "Returns the db-view for the todo list UI."
@@ -57,12 +59,9 @@
                                      todo-items)
                    :todo/active-count (count active)
                    :todo/completed-count (count completed)
-                   :todo/complete-all! (command/encrypt-command
-                                        {:command/type :todo/complete-all!})
-                   :todo/activate-all! (command/encrypt-command
-                                        {:command/type :todo/activate-all!})
-                   :todo/clear-completed! (command/encrypt-command
-                                           {:command/type :todo/clear-completed!})}})))
+                   :todo/complete-all! [(symbol #'todo-items/complete-all!)]
+                   :todo/activate-all! [(symbol #'todo-items/activate-all!)]
+                   :todo/clear-completed! [(symbol #'todo-items/clear-completed!)]}})))
 
 (comment
   (require '[clj-http.client :as http])

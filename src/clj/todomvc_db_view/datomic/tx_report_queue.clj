@@ -1,6 +1,8 @@
 (ns todomvc-db-view.datomic.tx-report-queue
   (:require [datomic.api :as d]
-            [todomvc-db-view.db-view.notify :as notify]))
+            [todomvc-db-view.db-view.notify :as notify]
+            [todomvc-db-view.datomic.connection :as con]
+            [redelay.core :as rd]))
 
 ;; Concept:
 ;;
@@ -26,13 +28,12 @@
     (.put tx-report-queue
           ::stop)))
 
-(defn start!
-  [con]
-  (let [tx-report-queue (d/tx-report-queue con)]
-    {:datomic/tx-report-queue tx-report-queue
-     :datomic/tx-report-listener-loop (tx-report-listener-loop tx-report-queue)}))
+(defonce queue
+  (rd/state :start
+            (let [tx-report-queue (d/tx-report-queue @con/con)
+                  stop (tx-report-listener-loop tx-report-queue)]
+              stop)
 
-(defn stop!
-  [system-value]
-  ((:datomic/tx-report-listener-loop system-value))
-  (d/remove-tx-report-queue (:datomic/tx-report-queue system-value)))
+            :stop
+            (this)
+            ))

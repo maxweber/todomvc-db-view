@@ -1,6 +1,5 @@
 (ns dev.init
-  (:require [todomvc-db-view.system :as system]
-            [dev]))
+  (:require [todomvc-db-view.system :as system]))
 
 ;; Concept:
 ;;

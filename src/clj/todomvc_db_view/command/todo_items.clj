@@ -1,5 +1,7 @@
 (ns todomvc-db-view.command.todo-items
-  (:require [datomic.api :as d]))
+  (:require [datomic.api :as d]
+            [todomvc-db-view.datomic.connection :as con]
+            [todomvc-db-view.datomic.util :as datomic-util]))
 
 ;; Concept:
 ;;
@@ -28,18 +30,6 @@
      [:db/add eid :todo/done done-value])
    (q-todo-item-eids db)))
 
-(defn complete-all-tx
-  "Transaction to mark all todo items as completed."
-  [command]
-  (set-done-tx (:datomic/db command)
-               true))
-
-(defn activate-all-tx
-  "Transaction to mark all todo items as active."
-  [command]
-  (set-done-tx (:datomic/db command)
-               false))
-
 (defn q-completed-todo-item-eids
   "Returns the entity ids of completed todo items."
   [db]
@@ -52,13 +42,22 @@
 
 (defn clear-completed-tx
   "Transaction to remove all todo items which are marked as completed."
-  [command]
+  [db]
   (map
    (fn [eid]
      [:db/retractEntity eid])
-   (q-completed-todo-item-eids (:datomic/db command))))
+   (q-completed-todo-item-eids db)))
 
-(def command-effects
-  {:todo/activate-all! activate-all-tx
-   :todo/complete-all! complete-all-tx
-   :todo/clear-completed! clear-completed-tx})
+(defn activate-all!
+  []
+  (datomic-util/transact! (set-done-tx (con/db)
+                                       false)))
+
+(defn complete-all!
+  []
+  (datomic-util/transact! (set-done-tx (con/db)
+                                       true)))
+
+(defn clear-completed!
+  []
+  (datomic-util/transact! (clear-completed-tx (con/db))))
